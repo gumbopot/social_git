@@ -85,7 +85,7 @@ def logout():
 def post():
 	form = forms.PostForm()
 	if form.validate_on_submit():
-		models.Post.create(user=g.user._get_currect_object(),
+		models.Post.create(user=g.user._get_current_object(),
 						   content=form.content.data.strip())
 		flash("Message posted! Thanks!", "success")
 		return redirect(url_for('index'))
@@ -94,18 +94,35 @@ def post():
 
 @app.route('/')
 def index():
-	return 'Hey'
+	stream = models.Post.select().limit(100)
+	return render_template('stream.html', stream=stream)
 
+
+@app.route('/stream',)
+@app.route('/stream/<username>')
+def stream(username=None):
+	template = 'stream.html'
+	if username and username != current_user.username:
+		# ** = "is like" - compares without case
+		user = models.User.select().where(models.User.username**username).get()
+		stream = user.posts.limit(100)
+	else:
+		stream = current_user.get_stream().limit(100)
+		user = current_user
+	if username:
+		template = 'user_stream.html'
+	return render_template(template, stream=stream, user=user)
 
 
 if __name__ == '__main__':
 	models.initialize()
 	try:
-		models.User.create_user(
-			username='kennethlove',
-			email='kenneth@teamtreehouse.com',
-			password='password',
-			admin=True
+		with models.DATABASE.transaction():
+			models.User.create_user(
+				username='kennethlove',
+				email='kenneth@teamtreehouse.com',
+				password='password',
+				admin=True
 		)
 	except ValueError:
 		pass
