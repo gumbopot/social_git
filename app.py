@@ -6,7 +6,7 @@ from flask.ext.login import (LoginManager, login_user, logout_user,
 import forms
 import models
 
-DEBUG = True
+#DEBUG = True
 PORT = 8000
 HOST = '0.0.0.0'
 
@@ -126,4 +126,4 @@ if __name__ == '__main__':
 		)
 	except ValueError:
 		pass
-	app.run(debug=DEBUG, host=HOST, port=PORT)
+	app.run(host=HOST, port=PORT)
