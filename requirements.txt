@@ -1,4 +1,6 @@
 flask>=0.12
 flask-bcrypt>=0.7.1
 flask-login>=0.4.1
-gunicorn==19.0.0
+flask-wtf>=0.14
+gunicorn>=19.0.0
+peewee>=3.2.2
